@@ -7,7 +7,21 @@ var Status = require('./Status.js');
 
 var app = new App();
 
-document.addEventListener( "DOMContentLoaded", drawDom, false )
+document.addEventListener( "DOMContentLoaded", ready, false )
+
+function ready() {
+	if (localStorage.getItem("app")) {
+		var appModel = JSON.parse(localStorage.getItem("app"));
+		appModel.lists.forEach(function(list){
+			let items = [];
+			list.items.forEach(function(item) {
+				items.push(new Item(item.title, item.date, item.status));
+			});
+			app.add(new List(list.title, items, list.isDeletable));
+		});
+	}
+	drawDom();
+}
 
 function buttonClicked(event) {
 	var action = event.target.dataset.action;
@@ -56,12 +70,14 @@ function statusChanged(event) {
 	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
 	let item = list.getItemById(itemId);
 	item.status = (event.target.checked)? Status.COMPLETE : Status.PENDING;
+	updateLocalStorage();
 }
 
 function listTitleInput(event) {
 	let listId = Utils.getParents(event.target,".list")[0].dataset.id
 	let list = app.getListById(listId);
 	list.title = (event.target.textContent)? event.target.textContent : 'Enter titile';
+	updateLocalStorage();
 }
 
 function itemTitleInput(event) {
@@ -70,6 +86,7 @@ function itemTitleInput(event) {
 	let list = app.getListById(listId);
 	let item = list.getItemById(itemId);
 	item.title = (event.target.textContent)? event.target.textContent : 'Enter titile';
+	updateLocalStorage();
 }
 
 function itemDateChanged(event) {
@@ -83,9 +100,11 @@ function itemDateChanged(event) {
 		item.date = "";
 		drawDom();
 	}
+	updateLocalStorage();
 }
 
-function drawDom() {
+function drawDom() { //TO-DO: REFRACTOR
+	updateLocalStorage();
 	document.body.innerHTML = app.render();
 	var buttons = document.getElementsByClassName("btn");
 	for ( let i = 0; i < buttons.length; i++) {
@@ -109,4 +128,8 @@ function drawDom() {
 	for ( let i = 0; i < itemDates.length; i++) {
 		itemDates[i].addEventListener('change', itemDateChanged);	
 	}
+}
+
+function updateLocalStorage() {
+	localStorage.setItem("app", JSON.stringify(app));
 }
