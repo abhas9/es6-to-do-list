@@ -61,9 +61,9 @@ function buttonClicked(event) {
 
 function statusChanged(event) {
 	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
-	let item = list.getItemById(itemId);
+	let item = app.getItemById(itemId);
 	item.status = (event.target.checked)? Status.COMPLETE : Status.PENDING;
-	updateLocalStorage();
+	drawDom();
 }
 
 function listTitleInput(event) {
@@ -82,9 +82,8 @@ function itemTitleInput(event) {
 
 function itemDateChanged(event) {
 	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
-	let listId = Utils.getParents(event.target,".list")[0].dataset.id
-	let list = app.getListById(listId);
-	let item = list.getItemById(itemId);
+	let item = app.getItemById(itemId);
+	
 	if (event.target.value) {
 		var d = new Date();
 		item.date = new Date(event.target.value + " " +  d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
@@ -92,7 +91,7 @@ function itemDateChanged(event) {
 		item.date = "";
 		drawDom();
 	}
-	updateLocalStorage();
+	drawDom();
 }
 
 function drawDom() { //TO-DO: REFRACTOR
