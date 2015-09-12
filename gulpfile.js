@@ -27,7 +27,7 @@ gulp.task('babelify', function(){
 
 gulp.task('watch', function() {
     gulp.watch(['src/**/*.{html,css,js}',
-                'src/*.{html,css,js}'], ['movestatic']);
+                'src/*.{html,css,js}'], ['movestatic', 'babelify']);
 });
 
 gulp.task('default', ['movestatic', 'babelify']);
