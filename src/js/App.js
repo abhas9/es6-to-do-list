@@ -11,7 +11,9 @@ var App = class {
   	return ((list.length)? list[0] : null);
   }
   render() {
-  	var html = '<div class="app">';
+  	var html = `<div class="app">
+  					<div class="btn" data-action="add-list">[+] Add List</div>
+  				`;
   	this.lists.forEach(function (list) {
       html += list.render();
     });

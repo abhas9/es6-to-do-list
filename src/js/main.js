@@ -22,6 +22,13 @@ document.addEventListener( "DOMContentLoaded", drawDom, false )
 function buttonClicked(event) {
 	var action = event.target.dataset.action;
 	switch (action) {
+		case "add-list":
+						{
+							let list = new List("New Empty List");
+							app.add(list);
+							drawDom();
+							break;
+						}
 		case "add-item":
 						{
 							let listId = Utils.getParents(event.target,".list")[0].dataset.id;
