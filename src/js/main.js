@@ -3,6 +3,8 @@ var Status = require('./Status.js');
 var List = require('./List.js');
 var Utils = require('./Utils.js');
 var App = require('./App.js');
+var Status = require('./Status.js');
+
 
 
 
@@ -44,11 +46,21 @@ function buttonClicked(event) {
 	}
 }
 
+function statusChanged() {
+	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
+	let item = list.getItemById(itemId);
+	item.status = (event.target.checked)? Status.COMPLETE : Status.PENDING;
+}
+
 function drawDom() {
 	document.body.innerHTML = app.render();
 	var buttons = document.getElementsByClassName("btn");
 	for ( let i = 0; i < buttons.length; i++) {
 		buttons[i].addEventListener('click', buttonClicked);	
+	}
+	var statusInput = document.getElementsByClassName("status-input");
+	for ( let i = 0; i < statusInput.length; i++) {
+		statusInput[i].addEventListener('change', statusChanged);	
 	}
 }
 
