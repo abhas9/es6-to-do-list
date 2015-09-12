@@ -139,6 +139,7 @@ function getAppFromModel() {
 			});
 			app.add(new List(list.title, items, list.isEditable, list.id));
 		});
+		app.pastDueList =  new List("Past Due", app.getDueItems(), false);
 	}
 }
 
