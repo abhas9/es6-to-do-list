@@ -10,16 +10,7 @@ var app = new App();
 document.addEventListener( "DOMContentLoaded", ready, false )
 
 function ready() {
-	if (localStorage.getItem("app")) {
-		var appModel = JSON.parse(localStorage.getItem("app"));
-		appModel.lists.forEach(function(list){
-			let items = [];
-			list.items.forEach(function(item) {
-				items.push(new Item(item.title, item.date, item.status));
-			});
-			app.add(new List(list.title, items, list.isDeletable));
-		});
-	}
+	getAppFromModel();
 	drawDom();
 }
 
@@ -129,6 +120,19 @@ function drawDom() { //TO-DO: REFRACTOR
 	var itemDates = document.getElementsByClassName("item-date");
 	for ( let i = 0; i < itemDates.length; i++) {
 		itemDates[i].addEventListener('change', itemDateChanged);	
+	}
+}
+
+function getAppFromModel() {
+	if (localStorage.getItem("app")) {
+		var appModel = JSON.parse(localStorage.getItem("app"));
+		appModel.lists.forEach(function(list){
+			let items = [];
+			list.items.forEach(function(item) {
+				items.push(new Item(item.title, item.date, item.status));
+			});
+			app.add(new List(list.title, items, list.isDeletable));
+		});
 	}
 }
 
