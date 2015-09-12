@@ -11,14 +11,14 @@ var List = class {
   render() {
     var html = `<div class="list" data-id="${this.id}" data-isEditable="${this.isEditable}">
                   <h2 class="list-title">${this.title}</h2>
-                  ${(this.isEditable)? '<div class="btn" data-action="delete-list">[X] Delete List</div>' : ''}
-                  <ul>`;
+                  ${(this.isEditable)? '<div class="btn delete-list danger" data-action="delete-list">X</div>' : ''}
+                  <ul class="items">`;
     this.items.forEach(function (item) {
       html += item.render();
     });
     html += `
                 </ul>
-                ${(this.isEditable)? '<div class="btn" data-action="add-item">[+] Add Item</div>' : ""}
+                ${(this.isEditable)? '<div class="btn add-item success" data-action="add-item">Add Item</div>' : ""}
             </div>`;
     return html;
   }

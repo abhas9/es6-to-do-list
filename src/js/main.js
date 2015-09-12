@@ -19,7 +19,7 @@ function buttonClicked(event) {
 	switch (action) {
 		case "add-list":
 						{
-							let list = new List("New Empty List");
+							let list = new List("New List");
 							app.add(list);
 							drawDom();
 							break;

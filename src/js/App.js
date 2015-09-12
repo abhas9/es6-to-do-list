@@ -34,7 +34,7 @@ var App = class {
   render() {
     let pastDueList = new List("Past Due", this.getDueItems(), false);
   	let html = `<div class="app">
-  					<div class="btn" data-action="add-list">[+] Add List</div>
+  					<div class="btn add-list success" data-action="add-list">[+] Add List</div>
   				`;
   	this.lists.forEach(function (list) {
       html += list.render();
