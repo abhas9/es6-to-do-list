@@ -18,10 +18,10 @@ gulp.task('movestatic', function(){
 });
 
 gulp.task('babelify', function(){
-    browserify('./src/js/app.js')
+    browserify('./src/js/main.js')
         .transform(babelify)
         .bundle()
-        .pipe(source('app.js'))
+        .pipe(source('main.js'))
         .pipe(gulp.dest('./build/js/'));
 });
 
