@@ -12,15 +12,40 @@ var Utils = require('./Utils.js');
 var App = (function () {
   function App() {
     var lists = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-    var pastDueList = arguments.length <= 1 || arguments[1] === undefined ? new List("Past Due", [], false) : arguments[1];
 
     _classCallCheck(this, App);
 
     this.lists = lists;
-    this.pastDueList = pastDueList;
   }
 
   _createClass(App, [{
+    key: 'getDueItems',
+    value: function getDueItems() {
+      var dueItems = [];
+      this.lists.forEach(function (list) {
+        var items = [];
+        list.items.forEach(function (item) {
+          if (item.date && Utils.dateDiffInDays(new Date(item.date), new Date()) > 0) {
+            dueItems.push(item);
+          }
+        });
+      });
+      return dueItems;
+    }
+  }, {
+    key: 'getItemById',
+    value: function getItemById(id) {
+      for (var i = 0; i < this.lists.length; i++) {
+        var item = this.lists[i].items.filter(function (i) {
+          return i.id === id;
+        });
+        if (item.length) {
+          return item[0];
+        }
+      }
+      return null;
+    }
+  }, {
     key: 'getListById',
     value: function getListById(id) {
       var list = this.lists.filter(function (l) {
@@ -31,11 +56,12 @@ var App = (function () {
   }, {
     key: 'render',
     value: function render() {
-      var html = '<div class="app">\n  \t\t\t\t\t<div class="btn" data-action="add-list">[+] Add List</div>\n  \t\t\t\t';
+      var pastDueList = new List("Past Due", this.getDueItems(), false);
+      var html = '<div class="app">\n  \t\t\t\t\t<div class="btn add-list success" data-action="add-list">[+] Add List</div>\n  \t\t\t\t';
       this.lists.forEach(function (list) {
         html += list.render();
       });
-      html += this.pastDueList.render();
+      html += pastDueList.render();
       html += '</div>';
       return html;
     }
@@ -47,7 +73,7 @@ var App = (function () {
   }, {
     key: 'remove',
     value: function remove(list) {
-      this.list = this.lists.filter(function (l) {
+      this.lists = this.lists.filter(function (l) {
         return l.id !== list.id;
       });
     }
@@ -73,10 +99,11 @@ var Item = (function () {
     var title = arguments.length <= 0 || arguments[0] === undefined ? "" : arguments[0];
     var date = arguments.length <= 1 || arguments[1] === undefined ? "" : arguments[1];
     var status = arguments.length <= 2 || arguments[2] === undefined ? Status.PENDING : arguments[2];
+    var id = arguments.length <= 3 || arguments[3] === undefined ? "" : arguments[3];
 
     _classCallCheck(this, Item);
 
-    this.id = Utils.guid();
+    this.id = id ? id : Utils.guid();
     this.title = title;
     this.date = date;
     this.status = status;
@@ -85,7 +112,8 @@ var Item = (function () {
   _createClass(Item, [{
     key: 'render',
     value: function render() {
-      return '<li class="item" data-id="' + this.id + '" data-status="' + this.status + '">\n              <div><input type="checkbox" class="status-input" ' + (this.status === Status.COMPLETE ? "checked" : "") + ' /></div>\n              <div class="item-title">' + this.title + '</div>\n              <div>' + (this.date ? "<input type='date' class='item-date' value='" + this.date + "' />" : "<div class='btn' data-action='add-date'>[+] Add Date</div></div>") + ' \n              <div class="btn" data-action="delete-item">[X] Delete item</div>\n            </li>';
+      var formattedDate = this.date ? Utils.formatDate(this.date) : undefined;
+      return '<li class="item" data-id="' + this.id + '" data-status="' + this.status + '">\n              <div class="status-input-wrp"><input type="checkbox" class="status-input" ' + (this.status === Status.COMPLETE ? "checked" : "") + ' /></div>\n              <div class="item-title">' + this.title + '</div>\n              <div>' + (this.date ? "<input type='date' class='item-date' value='" + formattedDate + "' />" : "<div class='btn' data-action='add-date'>[+] Add Date</div></div>") + ' \n              <div class="btn delete-item danger" data-action="delete-item">X</div>\n            </li>';
     }
   }]);
 
@@ -109,10 +137,11 @@ var List = (function () {
     var title = arguments.length <= 0 || arguments[0] === undefined ? "" : arguments[0];
     var items = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
     var isEditable = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+    var id = arguments.length <= 3 || arguments[3] === undefined ? "" : arguments[3];
 
     _classCallCheck(this, List);
 
-    this.id = Utils.guid();
+    this.id = id ? id : Utils.guid();
     this.title = title;
     this.items = items;
     this.isEditable = isEditable;
@@ -121,11 +150,11 @@ var List = (function () {
   _createClass(List, [{
     key: 'render',
     value: function render() {
-      var html = '<div class="list" data-id="' + this.id + '" data-isEditable="' + this.isEditable + '">\n                  <h2 class="list-title">' + this.title + '</h2>\n                  <ul>';
+      var html = '<div class="list" data-id="' + this.id + '" data-isEditable="' + this.isEditable + '">\n                  <h2 class="list-title">' + this.title + '</h2>\n                  ' + (this.isEditable ? '<div class="btn delete-list danger" data-action="delete-list">X</div>' : '') + '\n                  <ul class="items">';
       this.items.forEach(function (item) {
         html += item.render();
       });
-      html += '\n                </ul>\n                ' + (this.isEditable ? "<div class='btn' data-action='add-item'>[+] Add Item</div>" : "") + '\n            </div>';
+      html += '\n                </ul>\n                ' + (this.isEditable ? '<div class="btn add-item success" data-action="add-item">Add Item</div>' : "") + '\n            </div>';
       return html;
     }
   }, {
@@ -204,6 +233,9 @@ module.exports = {
 		}
 	},
 	formatDate: function formatDate(date) {
+		if (typeof date === "string") {
+			date = new Date(date);
+		}
 		var dd = date.getDate();
 		var mm = date.getMonth() + 1; //January is 0
 
@@ -215,8 +247,10 @@ module.exports = {
 			mm = '0' + mm;
 		}
 		return yyyy + '-' + mm + '-' + dd;
+	},
+	dateDiffInDays: function dateDiffInDays(date1, date2) {
+		return (date2.getTime() - date1.getTime()) / (1000 * 3600 * 24);
 	}
-
 };
 
 },{}],6:[function(require,module,exports){
@@ -243,27 +277,35 @@ function buttonClicked(event) {
 	switch (action) {
 		case "add-list":
 			{
-				var _list = new List("New Empty List");
-				app.add(_list);
+				var list = new List("New List");
+				app.add(list);
+				drawDom();
+				break;
+			}
+		case "delete-list":
+			{
+				var listId = Utils.getParents(event.target, ".list")[0].dataset.id;
+				var list = app.getListById(listId);
+				app.remove(list);
 				drawDom();
 				break;
 			}
 		case "add-item":
 			{
 				var listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-				var _list2 = app.getListById(listId);
+				var list = app.getListById(listId);
 				var item = new Item("New Item");
-				_list2.add(item);
+				list.add(item);
 				drawDom();
 				break;
 			}
 		case "delete-item":
 			{
 				var itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
+				var item = app.getItemById(itemId);
 				var listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-				var _list3 = app.getListById(listId);
-				var item = _list3.getItemById(itemId);
-				_list3.remove(item);
+				var list = app.getListById(listId);
+				list.remove(item);
 				drawDom();
 				break;
 			}
@@ -271,11 +313,11 @@ function buttonClicked(event) {
 			{
 				var itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
 				var listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-				var _list4 = app.getListById(listId);
-				var item = _list4.getItemById(itemId);
-				var date = new Date();
-				date.setDate(date.getDate() + 1);
-				item.date = Utils.formatDate(date);
+				var list = app.getListById(listId);
+				var item = list.getItemById(itemId);
+				var currentDate = new Date();
+				currentDate.setDate(currentDate.getDate() + 1);
+				item.date = currentDate.toUTCString();
 				drawDom();
 				break;
 			}
@@ -285,9 +327,9 @@ function buttonClicked(event) {
 
 function statusChanged(event) {
 	var itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
-	var item = list.getItemById(itemId);
+	var item = app.getItemById(itemId);
 	item.status = event.target.checked ? Status.COMPLETE : Status.PENDING;
-	updateLocalStorage();
+	drawDom();
 }
 
 function listTitleInput(event) {
@@ -299,25 +341,51 @@ function listTitleInput(event) {
 
 function itemTitleInput(event) {
 	var itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
-	var listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-	var list = app.getListById(listId);
-	var item = list.getItemById(itemId);
+	var item = app.getItemById(itemId);
 	item.title = event.target.textContent ? event.target.textContent : 'Enter titile';
-	updateLocalStorage();
+	drawDom();
 }
 
 function itemDateChanged(event) {
 	var itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
-	var listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-	var list = app.getListById(listId);
-	var item = list.getItemById(itemId);
+	var item = app.getItemById(itemId);
+
 	if (event.target.value) {
-		item.date = event.target.value;
+		var d = new Date();
+		item.date = new Date(event.target.value + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
 	} else {
 		item.date = "";
 		drawDom();
 	}
-	updateLocalStorage();
+	drawDom();
+}
+
+function itemDragStarted(event) {
+	var itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
+	var item = app.getItemById(itemId);
+	var parentListId = Utils.getParents(event.target, ".list")[0].dataset.id;
+	event.dataTransfer.setData("item", JSON.stringify(item));
+	event.dataTransfer.setData("parentListId", JSON.stringify(parentListId));
+}
+
+function itemDropped(event) {
+	event.preventDefault();
+	var itemJSON = JSON.parse(event.dataTransfer.getData("item"));
+	var oldListId = JSON.parse(event.dataTransfer.getData("parentListId"));
+	var newListId = Utils.getParents(event.target, ".list")[0].dataset.id;
+	var item = app.getItemById(itemJSON.id);
+	var oldList = app.getListById(oldListId);
+	var newList = app.getListById(newListId);
+	if (oldList && newList) {
+		// can't move to and from past due date
+		oldList.remove(item);
+		newList.add(item);
+		drawDom();
+	}
+}
+
+function allowdrop(event) {
+	event.preventDefault();
 }
 
 function drawDom() {
@@ -335,16 +403,29 @@ function drawDom() {
 	var listTitles = document.getElementsByClassName("list-title");
 	for (var i = 0; i < listTitles.length; i++) {
 		listTitles[i].setAttribute("contenteditable", true);
-		listTitles[i].addEventListener('input', listTitleInput);
+		listTitles[i].addEventListener('blur', listTitleInput);
 	}
 	var itemTitles = document.getElementsByClassName("item-title");
 	for (var i = 0; i < itemTitles.length; i++) {
 		itemTitles[i].setAttribute("contenteditable", true);
-		itemTitles[i].addEventListener('input', itemTitleInput);
+		itemTitles[i].addEventListener('blur', itemTitleInput);
 	}
 	var itemDates = document.getElementsByClassName("item-date");
 	for (var i = 0; i < itemDates.length; i++) {
 		itemDates[i].addEventListener('change', itemDateChanged);
+	}
+	var items = document.getElementsByClassName("item");
+	for (var i = 0; i < items.length; i++) {
+		var parentListIsEditable = Utils.getParents(items[i], ".list")[0].dataset.iseditable;
+		if (parentListIsEditable == "true") {
+			items[i].setAttribute('draggable', true);
+			items[i].addEventListener('dragstart', itemDragStarted);
+		}
+	}
+	var lists = document.getElementsByClassName("list");
+	for (var i = 0; i < lists.length; i++) {
+		lists[i].addEventListener('dragover', allowdrop);
+		lists[i].addEventListener('drop', itemDropped);
 	}
 }
 
@@ -354,10 +435,11 @@ function getAppFromModel() {
 		appModel.lists.forEach(function (list) {
 			var items = [];
 			list.items.forEach(function (item) {
-				items.push(new Item(item.title, item.date, item.status));
+				items.push(new Item(item.title, item.date, item.status, item.id));
 			});
-			app.add(new List(list.title, items, list.isEditable));
+			app.add(new List(list.title, items, list.isEditable, list.id));
 		});
+		app.pastDueList = new List("Past Due", app.getDueItems(), false);
 	}
 }
 
