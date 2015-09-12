@@ -5,17 +5,7 @@ var Utils = require('./Utils.js');
 var App = require('./App.js');
 var Status = require('./Status.js');
 
-
-
-
-var item1 = new Item("Yo item 1");
-var item2 = new Item("Yo item 2");
-
-var list = new List("Yo List", [item1]);
-list.add(item2);
-list.remove(item2);
-
-var app = new App([list]);
+var app = new App();
 
 document.addEventListener( "DOMContentLoaded", drawDom, false )
 
