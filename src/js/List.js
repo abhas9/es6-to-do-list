@@ -2,8 +2,8 @@ var Utils = require('./Utils.js');
 var Status = require('./Status.js');
 
 var List = class {
-  constructor(title = "", items = [], isEditable = true) {
-    this.id = Utils.guid();
+  constructor(title = "", items = [], isEditable = true, id = "") {
+    this.id = (id) ? id : Utils.guid() ;
     this.title = title;
     this.items = items;
     this.isEditable = isEditable;
