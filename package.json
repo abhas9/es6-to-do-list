@@ -1,0 +1,22 @@
+{
+  "name": "ES6-TO-D0-LIST",
+  "version": "0.0.0",
+  "description": "Simple to do list with ES6",
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "gulp": "~3.9.0",
+    "vinyl-source-stream": "~1.1.0",
+    "browserify": "~11.0.1",
+    "path": "~0.11.14",
+    "gulp-babel": "~5.2.1",
+    "babelify": "~6.3.0",
+    "gulp-clean": "~0.3.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhas Tandon",
+  "license": "MIT"
+}
