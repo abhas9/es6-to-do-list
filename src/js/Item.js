@@ -9,9 +9,11 @@ var Item = class {
     this.status = status;
   }
   render() {
-    return `<li data-id="${this.id}" data-status="${this.status}">
+    return `<li class="item" data-id="${this.id}" data-status="${this.status}">
+              <div><input type="checkbox" ${(this.status === Status.COMPLETE)? checked : ""} /></div>
               ${this.title}
-              <span>${this.date}</span>
+              <div>${this.date}</div>
+              <div class="delete btn">[X]</div>
             </li>`
   }
 }
