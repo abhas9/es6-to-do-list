@@ -102,30 +102,72 @@ function itemDateChanged(event) {
 	drawDom();
 }
 
+function itemDragStarted(event) {
+	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
+	let item = app.getItemById(itemId);
+	let parentListId = Utils.getParents(event.target,".list")[0].dataset.id
+	event.dataTransfer.setData("item", JSON.stringify(item));
+	event.dataTransfer.setData("parentListId", JSON.stringify(parentListId));
+
+}
+
+function itemDropped(event) {
+	event.preventDefault();
+	let itemJSON = JSON.parse(event.dataTransfer.getData("item"));
+	let oldListId = JSON.parse(event.dataTransfer.getData("parentListId"));
+	let newListId = Utils.getParents(event.target,".list")[0].dataset.id
+	let item = app.getItemById(itemJSON.id);
+	let oldList = app.getListById(oldListId);
+	let newList = app.getListById(newListId);
+	if (oldList && newList) { // can't move to and from past due date
+		oldList.remove(item);
+		newList.add(item);
+		drawDom();
+	}
+}
+
+function allowdrop(event) {
+	event.preventDefault();
+}
+
 function drawDom() { //TO-DO: REFRACTOR
 	updateLocalStorage();
 	document.body.innerHTML = app.render();
-	var buttons = document.getElementsByClassName("btn");
+	let buttons = document.getElementsByClassName("btn");
 	for ( let i = 0; i < buttons.length; i++) {
 		buttons[i].addEventListener('click', buttonClicked);	
 	}
-	var statusInputs = document.getElementsByClassName("status-input");
+	let statusInputs = document.getElementsByClassName("status-input");
 	for ( let i = 0; i < statusInputs.length; i++) {
 		statusInputs[i].addEventListener('change', statusChanged);	
 	}
-	var listTitles = document.getElementsByClassName("list-title");
+	let listTitles = document.getElementsByClassName("list-title");
 	for ( let i = 0; i < listTitles.length; i++) {
 		listTitles[i].setAttribute("contenteditable", true);
 		listTitles[i].addEventListener('blur', listTitleInput);	
 	}
-	var itemTitles = document.getElementsByClassName("item-title");
+	let itemTitles = document.getElementsByClassName("item-title");
 	for ( let i = 0; i < itemTitles.length; i++) {
 		itemTitles[i].setAttribute("contenteditable", true);
 		itemTitles[i].addEventListener('blur', itemTitleInput);	
 	}
-	var itemDates = document.getElementsByClassName("item-date");
+	let itemDates = document.getElementsByClassName("item-date");
 	for ( let i = 0; i < itemDates.length; i++) {
 		itemDates[i].addEventListener('change', itemDateChanged);	
+	}
+	let items = document.getElementsByClassName("item");
+	for ( let i = 0; i < items.length; i++) {
+		let parentListIsEditable = Utils.getParents(items[i],".list")[0].dataset.iseditable;
+		if (parentListIsEditable == "true") {
+			items[i].setAttribute('draggable', true);	
+			items[i].addEventListener('dragstart', itemDragStarted);
+		}
+	}
+	let lists = document.getElementsByClassName("list");
+	for ( let i = 0; i < lists.length; i++) {
+		lists[i].addEventListener('dragover', allowdrop);
+		lists[i].addEventListener('drop', itemDropped);
+
 	}
 }
 

@@ -19,18 +19,13 @@ var App = class {
     return dueItems;
   }
   getItemById(id) {
-    let tmpItem = null;
-    this.lists.forEach(function(list){
-      let items = [];
-      tmpItem = list.items.filter(i => i.id === id);
-      if (tmpItem.length) {
-        tmpItem = tmpItem[0];
-        return;
-      } else {
-        tmpItem = null;
+    for (let i = 0; i < this.lists.length; i++) {
+      var item = this.lists[i].items.filter(i => i.id === id);
+      if (item.length) {
+        return item[0];
       }
-    });
-    return tmpItem;
+    }
+    return null;
   }
   getListById(id) {
   	let list = this.lists.filter(l => l.id === id);
