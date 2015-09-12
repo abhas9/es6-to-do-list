@@ -58,7 +58,9 @@ function buttonClicked(event) {
 							let listId = Utils.getParents(event.target,".list")[0].dataset.id;
 							let list = app.getListById(listId);
 							let item = list.getItemById(itemId);
-							item.date = Utils.formatDate(new Date());
+							var date = new Date();
+							date.setDate(date.getDate() + 1);
+							item.date = Utils.formatDate(date);
 							drawDom();
 							break;
 						}
