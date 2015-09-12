@@ -42,6 +42,9 @@ module.exports = {
 
 	},
 	formatDate : function(date) {
+		if (typeof date === "string") {
+			date = new Date(date);
+		}
 	    var dd = date.getDate();
 	    var mm = date.getMonth()+1; //January is 0
 
@@ -53,6 +56,8 @@ module.exports = {
 	        mm='0' + mm;
 	    } 
 	    return  yyyy + '-' + mm + '-' + dd;
+	},
+	dateDiffInDays : function(date1, date2) {
+		return ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 	}
-
 }
