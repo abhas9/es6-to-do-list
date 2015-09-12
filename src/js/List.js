@@ -10,7 +10,7 @@ var List = class {
   }
   render() {
     var html = `<div class="list" data-id="${this.id}" data-isDeletable="${this.isDeletable}">
-                  <h2>${this.title}</h2>
+                  <h2 class="list-title">${this.title}</h2>
                   <ul>`;
     this.items.forEach(function (item) {
       html += item.render();
