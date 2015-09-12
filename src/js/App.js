@@ -3,8 +3,9 @@ var List = require('./List.js');
 var Utils = require('./Utils.js');
 
 var App = class {
-	constructor(lists = []) {
+	constructor(lists = [], pastDueList = new List("Past Due", [], false)) {
 	   this.lists = lists;
+	   this.pastDueList = pastDueList;
   }
   getListById(id) {
   	let list = this.lists.filter(l => l.id === id);
@@ -17,6 +18,7 @@ var App = class {
   	this.lists.forEach(function (list) {
       html += list.render();
     });
+    html += this.pastDueList.render();
     html += '</div>';
     return html;
   }

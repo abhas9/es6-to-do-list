@@ -2,14 +2,14 @@ var Utils = require('./Utils.js');
 var Status = require('./Status.js');
 
 var List = class {
-  constructor(title = "", items = [], isDeletable = false) {
+  constructor(title = "", items = [], isEditable = true) {
     this.id = Utils.guid();
     this.title = title;
     this.items = items;
-    this.isDeletable = isDeletable;
+    this.isEditable = isEditable;
   }
   render() {
-    var html = `<div class="list" data-id="${this.id}" data-isDeletable="${this.isDeletable}">
+    var html = `<div class="list" data-id="${this.id}" data-isEditable="${this.isEditable}">
                   <h2 class="list-title">${this.title}</h2>
                   <ul>`;
     this.items.forEach(function (item) {
@@ -17,7 +17,7 @@ var List = class {
     });
     html += `
                 </ul>
-                <div class="btn" data-action="add-item">[+] Add Item</div>
+                ${(this.isEditable)? "<div class='btn' data-action='add-item'>[+] Add Item</div>" : ""}
             </div>`;
     return html;
   }

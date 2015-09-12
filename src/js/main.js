@@ -124,18 +124,18 @@ function drawDom() { //TO-DO: REFRACTOR
 }
 
 function getAppFromModel() {
-	if (localStorage.getItem("app")) {
-		var appModel = JSON.parse(localStorage.getItem("app"));
+	if (localStorage.getItem("appmodel")) {
+		var appModel = JSON.parse(localStorage.getItem("appmodel"));
 		appModel.lists.forEach(function(list){
 			let items = [];
 			list.items.forEach(function(item) {
 				items.push(new Item(item.title, item.date, item.status));
 			});
-			app.add(new List(list.title, items, list.isDeletable));
+			app.add(new List(list.title, items, list.isEditable));
 		});
 	}
 }
 
 function updateLocalStorage() {
-	localStorage.setItem("app", JSON.stringify(app));
+	localStorage.setItem("appmodel", JSON.stringify(app));
 }
