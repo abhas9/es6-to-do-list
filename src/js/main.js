@@ -32,10 +32,19 @@ function buttonClicked(event) {
 						{
 							let itemId = Utils.getParents(event.target,".item")[0].dataset.id
 							let listId = Utils.getParents(event.target,".list")[0].dataset.id;
-							console.log(listId);
 							let list = app.getListById(listId);
 							let item = list.getItemById(itemId);
 							list.remove(item);
+							drawDom();
+							break;
+						}
+		case "add-date":
+						{
+							let itemId = Utils.getParents(event.target,".item")[0].dataset.id
+							let listId = Utils.getParents(event.target,".list")[0].dataset.id;
+							let list = app.getListById(listId);
+							let item = list.getItemById(itemId);
+							item.date = Utils.formatDate(new Date());
 							drawDom();
 							break;
 						}
@@ -49,18 +58,31 @@ function statusChanged(event) {
 	item.status = (event.target.checked)? Status.COMPLETE : Status.PENDING;
 }
 
-function listTitleInput() {
+function listTitleInput(event) {
 	let listId = Utils.getParents(event.target,".list")[0].dataset.id
 	let list = app.getListById(listId);
 	list.title = (event.target.textContent)? event.target.textContent : 'Enter titile';
 }
 
-function itemTitleInput() {
+function itemTitleInput(event) {
 	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
 	let listId = Utils.getParents(event.target,".list")[0].dataset.id
 	let list = app.getListById(listId);
 	let item = list.getItemById(itemId);
 	item.title = (event.target.textContent)? event.target.textContent : 'Enter titile';
+}
+
+function itemDateChanged(event) {
+	let itemId = Utils.getParents(event.target,".item")[0].dataset.id
+	let listId = Utils.getParents(event.target,".list")[0].dataset.id
+	let list = app.getListById(listId);
+	let item = list.getItemById(itemId);
+	if (event.target.value) {
+		item.date = event.target.value
+	} else {
+		item.date = "";
+		drawDom();
+	}
 }
 
 function drawDom() {
@@ -82,5 +104,9 @@ function drawDom() {
 	for ( let i = 0; i < itemTitles.length; i++) {
 		itemTitles[i].setAttribute("contenteditable", true);
 		itemTitles[i].addEventListener('input', itemTitleInput);	
+	}
+	var itemDates = document.getElementsByClassName("item-date");
+	for ( let i = 0; i < itemDates.length; i++) {
+		itemDates[i].addEventListener('change', itemDateChanged);	
 	}
 }

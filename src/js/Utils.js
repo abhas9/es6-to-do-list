@@ -9,38 +9,22 @@ module.exports = {
 	    s4() + '-' + s4() + s4() + s4();
 	},
 	getParents : function (elem, selector) {
-
 	    var parents = [];
 	    if ( selector ) {
 	        var firstChar = selector.charAt(0);
 	    }
-
-	    // Get matches
 	    for ( ; elem && elem !== document; elem = elem.parentNode ) {
 	        if ( selector ) {
-
-	            // If selector is a class
 	            if ( firstChar === '.' ) {
 	                if ( elem.classList.contains( selector.substr(1) ) ) {
 	                    parents.push( elem );
 	                }
 	            }
-
-	            // If selector is an ID
 	            if ( firstChar === '#' ) {
 	                if ( elem.id === selector.substr(1) ) {
 	                    parents.push( elem );
 	                }
 	            }
-
-	            // // If selector is a data attribute
-	            // if ( firstChar === '[' ) {
-	            //     if ( elem.hasAttribute( selector.substr(1, selector.length - 1) ) {
-	            //         parents.push( elem );
-	            //     }
-	            // }
-
-	            // If selector is a tag
 	            if ( elem.tagName.toLowerCase() === selector ) {
 	                parents.push( elem );
 	            }
@@ -50,13 +34,25 @@ module.exports = {
 	        }
 
 	    }
-
-	    // Return parents if any exist
 	    if ( parents.length === 0 ) {
 	        return null;
 	    } else {
 	        return parents;
 	    }
 
+	},
+	formatDate : function(date) {
+	    var dd = date.getDate();
+	    var mm = date.getMonth()+1; //January is 0
+
+	    var yyyy = date.getFullYear();
+	    if(dd<10){
+	        dd='0' + dd;
+	    } 
+	    if(mm<10){
+	        mm='0' + mm;
+	    } 
+	    return  yyyy + '-' + mm + '-' + dd;
 	}
+
 }
