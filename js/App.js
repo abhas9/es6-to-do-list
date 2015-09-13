@@ -1,6 +1,7 @@
 var Item = require('./Item.js');
 var List = require('./List.js');
 var Utils = require('./Utils.js');
+var Status = require('./Status.js');
 
 var App = class {
 	constructor(lists = []) {
@@ -11,7 +12,7 @@ var App = class {
     this.lists.forEach(function(list){
       let items = [];
       list.items.forEach(function(item) {
-        if (item.date && Utils.dateDiffInDays(new Date(item.date), new Date()) > 0) {
+        if (item.date && item.status === Status.PENDING && Utils.dateDiffInDays(new Date(item.date), new Date()) > 0) {
           dueItems.push(item);
         }
       });
