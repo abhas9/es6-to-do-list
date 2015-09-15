@@ -33,7 +33,7 @@ var App = class {
   	return ((list.length)? list[0] : null);
   }
   render() {
-    let pastDueList = new List("Past Due", this.getDueItems(), false);
+    let pastDueList = new List("Past Due Date", this.getDueItems(), false);
   	let html = `<div class="app">
   					<div class="btn add-list success" data-action="add-list">[+] Add List</div>
   				`;

@@ -57,7 +57,7 @@ var App = (function () {
   }, {
     key: 'render',
     value: function render() {
-      var pastDueList = new List("Past Due", this.getDueItems(), false);
+      var pastDueList = new List("Past Due Date", this.getDueItems(), false);
       var html = '<div class="app">\n  \t\t\t\t\t<div class="btn add-list success" data-action="add-list">[+] Add List</div>\n  \t\t\t\t';
       this.lists.forEach(function (list) {
         html += list.render();
@@ -151,7 +151,7 @@ var List = (function () {
   _createClass(List, [{
     key: 'render',
     value: function render() {
-      var html = '<div class="list" data-id="' + this.id + '" data-isEditable="' + this.isEditable + '">\n                  <h2 class="list-title">' + this.title + '</h2>\n                  ' + (this.isEditable ? '<div class="btn delete-list danger" data-action="delete-list">X</div>' : '') + '\n                  <ul class="items">';
+      var html = '<div class="list" data-id="' + this.id + '" data-iseditable="' + this.isEditable + '">\n                  <h2 class="list-title">' + this.title + '</h2>\n                  ' + (this.isEditable ? '<div class="btn delete-list danger" data-action="delete-list">X</div>' : '') + '\n                  <ul class="items">';
       this.items.forEach(function (item) {
         html += item.render();
       });
@@ -403,8 +403,10 @@ function drawDom() {
 	}
 	var listTitles = document.getElementsByClassName("list-title");
 	for (var i = 0; i < listTitles.length; i++) {
-		listTitles[i].setAttribute("contenteditable", true);
-		listTitles[i].addEventListener('blur', listTitleInput);
+		if (listTitles[i].parentNode.dataset.iseditable == "true") {
+			listTitles[i].setAttribute("contenteditable", true);
+			listTitles[i].addEventListener('blur', listTitleInput);
+		}
 	}
 	var itemTitles = document.getElementsByClassName("item-title");
 	for (var i = 0; i < itemTitles.length; i++) {
