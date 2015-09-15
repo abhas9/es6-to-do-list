@@ -9,7 +9,7 @@ var List = class {
     this.isEditable = isEditable;
   }
   render() {
-    var html = `<div class="list" data-id="${this.id}" data-isEditable="${this.isEditable}">
+    var html = `<div class="list" data-id="${this.id}" data-iseditable="${this.isEditable}">
                   <h2 class="list-title">${this.title}</h2>
                   ${(this.isEditable)? '<div class="btn delete-list danger" data-action="delete-list">X</div>' : ''}
                   <ul class="items">`;

@@ -143,8 +143,10 @@ function drawDom() { //TO-DO: REFRACTOR
 	}
 	let listTitles = document.getElementsByClassName("list-title");
 	for ( let i = 0; i < listTitles.length; i++) {
-		listTitles[i].setAttribute("contenteditable", true);
-		listTitles[i].addEventListener('blur', listTitleInput);	
+		if (listTitles[i].parentNode.dataset.iseditable == "true") {
+			listTitles[i].setAttribute("contenteditable", true);
+			listTitles[i].addEventListener('blur', listTitleInput);
+		}
 	}
 	let itemTitles = document.getElementsByClassName("item-title");
 	for ( let i = 0; i < itemTitles.length; i++) {
