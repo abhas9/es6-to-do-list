@@ -2,13 +2,19 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Slab);
 body {
 	font-family: 'Roboto Slab', serif;
+	background-color: #6EE1FE;
+	background-image: url(http://wallvan.com/download?filename=2015/07/Blurry-light-Bubbles-Wallpaper.jpg);
+}
+input {
+	background-color: rgba(255, 255, 255, 0.68);
+    border-color: rgba(255, 255, 255, 0);
 }
 .list {
 	position: relative;
 	padding: 15px;
 	margin: 20px 10px 20px 0px;
 	border-radius: 0;
-	background-color: #FFF;
+	background-color: rgba(255,255,255,.6);
 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.16),0 0 2px 0 rgba(0,0,0,.12);
 	width: 225px;
 	float: left;
@@ -18,17 +24,19 @@ body {
 	margin-bottom: 10px;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
+	color: rgb(31, 23, 23);
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
 }
 .items {
 	list-style: none;
 	padding: 0px;
 }
 .items .item:nth-child(1) {
-	border-top: 1px dashed #ddd;
+	border-top: 1px dashed rgba(255, 255, 255, 0.78);
 }
 .items .item {
 	position: relative;
-	border-bottom: 1px dashed #ddd;
+	border-bottom: 1px dashed rgba(255, 255, 255, 0.78);
 	padding: 5px 0px 5px;
 }
 .btn.danger {
@@ -55,7 +63,7 @@ body {
 	vertical-align: middle;
 }
 .btn.success {
-	background: rgba(4, 155, 109, 0.61);
+	background: rgba(247, 255, 253, 0.49);
 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.16),0 0 2px 0 rgba(0,0,0,.12);
 	text-align: center;
 	font-size: 16px;
