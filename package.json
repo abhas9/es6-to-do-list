@@ -1,5 +1,5 @@
 {
-    "name": "ES6-TO-D0-LIST",
+    "name": "es6-to-do-list",
     "version": "0.0.0",
     "description": "Simple to do list with ES6",
     "dependencies": {},
