@@ -102,3 +102,6 @@ input {
 .status-input-wrp {
 	float: left;
 }
+.list[data-iseditable="false"] .delete-item {
+	display: none;
+}
