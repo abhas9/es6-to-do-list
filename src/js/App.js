@@ -1,15 +1,13 @@
-var Item = require('./Item.js');
-var List = require('./List.js');
-var Utils = require('./Utils.js');
-var Status = require('./Status.js');
-var App = class {
+import List from "./List.js";
+import Utils from "./Utils.js";
+import Status from "./Status.js";
+class App {
     constructor(lists = []) {
         this.lists = lists;
     }
     getDueItems() {
         let dueItems = [];
         this.lists.forEach(function(list) {
-            let items = [];
             list.items.forEach(function(item) {
                 if (item.date && item.status === Status.PENDING && Utils.dateDiffInDays(new Date(item.date), new Date()) > 0) {
                     dueItems.push(item);
@@ -20,7 +18,7 @@ var App = class {
     }
     getItemById(id) {
         for (let i = 0; i < this.lists.length; i++) {
-            var item = this.lists[i].items.filter(i => i.id === id);
+            let item = this.lists[i].items.filter(listItem => listItem.id === id);
             if (item.length) {
                 return item[0];
             }
@@ -40,7 +38,7 @@ var App = class {
             html += list.render();
         });
         html += pastDueList.render();
-        html += '</div>';
+        html += "</div>";
         return html;
     }
     add(list) {
@@ -50,4 +48,4 @@ var App = class {
         this.lists = this.lists.filter(l => (l.id !== list.id));
     }
 }
-module.exports = App;
+export default App;
