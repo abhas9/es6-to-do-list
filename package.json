@@ -1,22 +1,22 @@
 {
-  "name": "ES6-TO-D0-LIST",
-  "version": "0.0.0",
-  "description": "Simple to do list with ES6",
-  "dependencies": {},
-  "devDependencies": {
-    "babelify": "~6.3.0",
-    "browserify": "~11.0.1",
-    "eslint": "^1.6.0",
-    "gulp": "~3.9.0",
-    "gulp-babel": "~5.2.1",
-    "gulp-clean": "~0.3.1",
-    "path": "~0.11.14",
-    "vinyl-source-stream": "~1.1.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "./node_modules/eslint/bin/eslint.js src/**/*.js"
-  },
-  "author": "Abhas Tandon",
-  "license": "MIT"
+    "name": "ES6-TO-D0-LIST",
+    "version": "0.0.0",
+    "description": "Simple to do list with ES6",
+    "dependencies": {},
+    "devDependencies": {
+        "babelify": "~6.3.0",
+        "browserify": "~11.0.1",
+        "eslint": "^1.6.0",
+        "gulp": "~3.9.0",
+        "gulp-babel": "~5.2.1",
+        "gulp-clean": "~0.3.1",
+        "path": "~0.11.14",
+        "vinyl-source-stream": "~1.1.0"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "./node_modules/eslint/bin/eslint.js src/**/*.js"
+    },
+    "author": "Abhas Tandon",
+    "license": "MIT"
 }
