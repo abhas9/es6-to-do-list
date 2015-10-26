@@ -17,8 +17,13 @@ class App {
         return dueItems;
     }
     getItemById(id) {
+        const filterById = (function filterById(id1) {
+            return function(listItem) {
+                return listItem.id === id1;
+            };
+        }(id));
         for (let i = 0; i < this.lists.length; i++) {
-            let item = this.lists[i].items.filter(listItem => listItem.id === id);
+            let item = this.lists[i].items.filter(filterById);
             if (item.length) {
                 return item[0];
             }

@@ -87,6 +87,59 @@ function itemDragStarted(event) {
 function allowdrop(event) {
     event.preventDefault();
 }
+/**
+ * Event handler for clicks on elements with class .btn
+ * @param {object} event - Event attached with click
+ */
+function buttonClicked(event) {
+    let action = event.target.dataset.action;
+    switch (action) {
+        case "add-list":
+            {
+                let list = new List("New List");
+                app.add(list);
+                break;
+            }
+        case "delete-list":
+            {
+                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
+                let list = app.getListById(listId);
+                app.remove(list);
+                break;
+            }
+        case "add-item":
+            {
+                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
+                let list = app.getListById(listId);
+                let item = new Item("New Item");
+                list.add(item);
+                break;
+            }
+        case "delete-item":
+            {
+                let itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
+                let item = app.getItemById(itemId);
+                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
+                let list = app.getListById(listId);
+                list.remove(item);
+                break;
+            }
+        case "add-date":
+            {
+                let itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
+                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
+                let list = app.getListById(listId);
+                let item = list.getItemById(itemId);
+                let currentDate = new Date();
+                currentDate.setDate(currentDate.getDate() + 1);
+                item.date = currentDate.toUTCString();
+                break;
+            }
+        default:
+            throw Error("Unhandled Event");
+    }
+    drawDom();
+}
 /** To paint the dom based on current state */
 function drawDom() {
 		// TO-DO: REFRACTOR
@@ -128,63 +181,6 @@ function drawDom() {
     for (let i = 0; i < lists.length; i++) {
         lists[i].addEventListener("dragover", allowdrop);
         lists[i].addEventListener("drop", itemDropped);
-    }
-}
-/**
- * Event handler for clicks on elements with class .btn
- * @param {object} event - Event attached with click
- */
-function buttonClicked(event) {
-    let action = event.target.dataset.action;
-    switch (action) {
-        case "add-list":
-            {
-                let list = new List("New List");
-                app.add(list);
-                drawDom();
-                break;
-            }
-        case "delete-list":
-            {
-                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-                let list = app.getListById(listId);
-                app.remove(list);
-                drawDom();
-                break;
-            }
-        case "add-item":
-            {
-                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-                let list = app.getListById(listId);
-                let item = new Item("New Item");
-                list.add(item);
-                drawDom();
-                break;
-            }
-        case "delete-item":
-            {
-                let itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
-                let item = app.getItemById(itemId);
-                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-                let list = app.getListById(listId);
-                list.remove(item);
-                drawDom();
-                break;
-            }
-        case "add-date":
-            {
-                let itemId = Utils.getParents(event.target, ".item")[0].dataset.id;
-                let listId = Utils.getParents(event.target, ".list")[0].dataset.id;
-                let list = app.getListById(listId);
-                let item = list.getItemById(itemId);
-                let currentDate = new Date();
-                currentDate.setDate(currentDate.getDate() + 1);
-                item.date = currentDate.toUTCString();
-                drawDom();
-                break;
-            }
-        default:
-            throw Error("Unhandled Event");
     }
 }
 /** Retrives application state from localstorage */
