@@ -48,10 +48,13 @@ var App = (function () {
     }, {
         key: "getItemById",
         value: function getItemById(id) {
+            var filterById = (function filterById(id1) {
+                return function (listItem) {
+                    return listItem.id === id1;
+                };
+            })(id);
             for (var i = 0; i < this.lists.length; i++) {
-                var item = this.lists[i].items.filter(function (listItem) {
-                    return listItem.id === id;
-                });
+                var item = this.lists[i].items.filter(filterById);
                 if (item.length) {
                     return item[0];
                 }
@@ -329,10 +332,19 @@ function updateLocalStorage() {
     localStorage.setItem("appmodel", JSON.stringify(app));
 }
 /**
+ * To check and invoke callback if it is defined
+ * @param {function} callback - callback function
+ */
+function callbackHandler(callback) {
+    if (typeof callback === "function") {
+        return callback();
+    }
+}
+/**
  * Event handler for `drop` event on list item
  * @param {object} event - Associated event
  */
-function itemDropped(event) {
+function _itemDropped(event, callback) {
     event.preventDefault();
     var itemJSON = JSON.parse(event.dataTransfer.getData("item"));
     var oldListId = JSON.parse(event.dataTransfer.getData("parentListId"));
@@ -344,44 +356,45 @@ function itemDropped(event) {
         // can't move to and from past due date
         oldList.remove(item);
         newList.add(item);
-        drawDom();
+        return callbackHandler(callback);
     }
 }
 /**
  * Event handler for `change` of list item status
  * @param {object} event - Associated event
  */
-function statusChanged(event) {
+function _statusChanged(event, callback) {
     var itemId = _UtilsJs2["default"].getParents(event.target, ".item")[0].dataset.id;
     var item = app.getItemById(itemId);
     item.status = event.target.checked ? _StatusJs2["default"].COMPLETE : _StatusJs2["default"].PENDING;
-    drawDom();
+    return callbackHandler(callback);
 }
 /**
  * Event handler for `blur` event on list title
  * @param {object} event - Associated event
  */
-function listTitleInput(event) {
+function _listTitleInput(event, callback) {
     var listId = _UtilsJs2["default"].getParents(event.target, ".list")[0].dataset.id;
     var list = app.getListById(listId);
     list.title = event.target.textContent ? event.target.textContent : "Enter titile";
     updateLocalStorage();
+    return callbackHandler(callback);
 }
 /**
  * Event handler for `blur` event on list item title
  * @param {object} event - Associated event
  */
-function itemTitleInput(event) {
+function _itemTitleInput(event, callback) {
     var itemId = _UtilsJs2["default"].getParents(event.target, ".item")[0].dataset.id;
     var item = app.getItemById(itemId);
     item.title = event.target.textContent ? event.target.textContent : "Enter titile";
-    drawDom();
+    return callbackHandler(callback);
 }
 /**
  * Event handler for `change` event on list item date
  * @param {object} event - Associated event
  */
-function itemDateChanged(event) {
+function _itemDateChanged(event, callback) {
     var itemId = _UtilsJs2["default"].getParents(event.target, ".item")[0].dataset.id;
     var item = app.getItemById(itemId);
     if (event.target.value) {
@@ -389,80 +402,38 @@ function itemDateChanged(event) {
         item.date = new Date(event.target.value + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
     } else {
         item.date = "";
-        drawDom();
+        return callbackHandler(callback);
     }
-    drawDom();
+    return callbackHandler(callback);
 }
 /**
  * Event handler for `dragstart` event on list item
  * @param {object} event - Associated event
  */
-function itemDragStarted(event) {
+function _itemDragStarted(event, callback) {
     var itemId = _UtilsJs2["default"].getParents(event.target, ".item")[0].dataset.id;
     var item = app.getItemById(itemId);
     var parentListId = _UtilsJs2["default"].getParents(event.target, ".list")[0].dataset.id;
     event.dataTransfer.setData("item", JSON.stringify(item));
     event.dataTransfer.setData("parentListId", JSON.stringify(parentListId));
+    return callbackHandler(callback);
 }
 /** Prevents default action for dragover event on list items */
-function allowdrop(event) {
+function allowdrop(event, callback) {
     event.preventDefault();
-}
-/** To paint the dom based on current state */
-function drawDom() {
-    // TO-DO: REFRACTOR
-    updateLocalStorage();
-    document.body.innerHTML = app.render();
-    var buttons = document.getElementsByClassName("btn");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener("click", buttonClicked);
-    }
-    var statusInputs = document.getElementsByClassName("status-input");
-    for (var i = 0; i < statusInputs.length; i++) {
-        statusInputs[i].addEventListener("change", statusChanged);
-    }
-    var listTitles = document.getElementsByClassName("list-title");
-    for (var i = 0; i < listTitles.length; i++) {
-        if (listTitles[i].parentNode.dataset.iseditable === "true") {
-            listTitles[i].setAttribute("contenteditable", true);
-            listTitles[i].addEventListener("blur", listTitleInput);
-        }
-    }
-    var itemTitles = document.getElementsByClassName("item-title");
-    for (var i = 0; i < itemTitles.length; i++) {
-        itemTitles[i].setAttribute("contenteditable", true);
-        itemTitles[i].addEventListener("blur", itemTitleInput);
-    }
-    var itemDates = document.getElementsByClassName("item-date");
-    for (var i = 0; i < itemDates.length; i++) {
-        itemDates[i].addEventListener("change", itemDateChanged);
-    }
-    var items = document.getElementsByClassName("item");
-    for (var i = 0; i < items.length; i++) {
-        var parentListIsEditable = _UtilsJs2["default"].getParents(items[i], ".list")[0].dataset.iseditable;
-        if (parentListIsEditable === "true") {
-            items[i].setAttribute("draggable", true);
-            items[i].addEventListener("dragstart", itemDragStarted);
-        }
-    }
-    var lists = document.getElementsByClassName("list");
-    for (var i = 0; i < lists.length; i++) {
-        lists[i].addEventListener("dragover", allowdrop);
-        lists[i].addEventListener("drop", itemDropped);
-    }
+    return callbackHandler(callback);
 }
 /**
  * Event handler for clicks on elements with class .btn
  * @param {object} event - Event attached with click
  */
-function buttonClicked(event) {
+function _buttonClicked(event, callback) {
     var action = event.target.dataset.action;
     switch (action) {
         case "add-list":
             {
                 var list = new _ListJs2["default"]("New List");
                 app.add(list);
-                drawDom();
                 break;
             }
         case "delete-list":
@@ -470,7 +441,6 @@ function buttonClicked(event) {
                 var listId = _UtilsJs2["default"].getParents(event.target, ".list")[0].dataset.id;
                 var list = app.getListById(listId);
                 app.remove(list);
-                drawDom();
                 break;
             }
         case "add-item":
@@ -479,7 +449,6 @@ function buttonClicked(event) {
                 var list = app.getListById(listId);
                 var item = new _ItemJs2["default"]("New Item");
                 list.add(item);
-                drawDom();
                 break;
             }
         case "delete-item":
@@ -489,7 +458,6 @@ function buttonClicked(event) {
                 var listId = _UtilsJs2["default"].getParents(event.target, ".list")[0].dataset.id;
                 var list = app.getListById(listId);
                 list.remove(item);
-                drawDom();
                 break;
             }
         case "add-date":
@@ -501,11 +469,77 @@ function buttonClicked(event) {
                 var currentDate = new Date();
                 currentDate.setDate(currentDate.getDate() + 1);
                 item.date = currentDate.toUTCString();
-                drawDom();
                 break;
             }
         default:
             throw Error("Unhandled Event");
+    }
+    return callbackHandler(callback);
+}
+/** To paint the dom based on current state */
+function drawDom() {
+    // TO-DO: REFRACTOR
+    updateLocalStorage();
+    document.body.innerHTML = app.render();
+    var buttons = document.getElementsByClassName("btn");
+    var eventHandlers = {
+        buttonClicked: function buttonClicked(event) {
+            _buttonClicked(event, drawDom);
+        },
+        statusChanged: function statusChanged(event) {
+            _statusChanged(event, drawDom);
+        },
+        listTitleInput: function listTitleInput(event) {
+            _listTitleInput(event, drawDom);
+        },
+        itemTitleInput: function itemTitleInput(event) {
+            _itemTitleInput(event, drawDom);
+        },
+        itemDateChanged: function itemDateChanged(event) {
+            _itemDateChanged(event, drawDom);
+        },
+        itemDragStarted: function itemDragStarted(event) {
+            _itemDragStarted(event);
+        },
+        itemDropped: function itemDropped(event) {
+            _itemDropped(event, drawDom);
+        }
+    };
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", eventHandlers.buttonClicked);
+    }
+    var statusInputs = document.getElementsByClassName("status-input");
+    for (var i = 0; i < statusInputs.length; i++) {
+        statusInputs[i].addEventListener("change", eventHandlers.statusChanged);
+    }
+    var listTitles = document.getElementsByClassName("list-title");
+    for (var i = 0; i < listTitles.length; i++) {
+        if (listTitles[i].parentNode.dataset.iseditable === "true") {
+            listTitles[i].setAttribute("contenteditable", true);
+            listTitles[i].addEventListener("blur", eventHandlers.listTitleInput);
+        }
+    }
+    var itemTitles = document.getElementsByClassName("item-title");
+    for (var i = 0; i < itemTitles.length; i++) {
+        itemTitles[i].setAttribute("contenteditable", true);
+        itemTitles[i].addEventListener("blur", eventHandlers.itemTitleInput);
+    }
+    var itemDates = document.getElementsByClassName("item-date");
+    for (var i = 0; i < itemDates.length; i++) {
+        itemDates[i].addEventListener("change", eventHandlers.itemDateChanged);
+    }
+    var items = document.getElementsByClassName("item");
+    for (var i = 0; i < items.length; i++) {
+        var parentListIsEditable = _UtilsJs2["default"].getParents(items[i], ".list")[0].dataset.iseditable;
+        if (parentListIsEditable === "true") {
+            items[i].setAttribute("draggable", true);
+            items[i].addEventListener("dragstart", eventHandlers.itemDragStarted);
+        }
+    }
+    var lists = document.getElementsByClassName("list");
+    for (var i = 0; i < lists.length; i++) {
+        lists[i].addEventListener("dragover", allowdrop);
+        lists[i].addEventListener("drop", eventHandlers.itemDropped);
     }
 }
 /** Retrives application state from localstorage */
